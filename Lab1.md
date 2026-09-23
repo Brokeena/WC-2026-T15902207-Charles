@@ -111,11 +111,11 @@ Analyze → Enabled Protocols
 
 Submit:
 - A screenshot showing that the `OAI-5G` profile is selected. — 3 points
-![[Screenshot From 2026-09-23 08-33-56.png]]
+![](attachements/Screenshot%20From%202026-09-23%2008-33-56.png)
 - A screenshot showing the opened capture. — 2 points
-![[Pasted image 20260923083911.png]]
+![](attachements/Pasted%20image%2020260923083911.png)
 - A screenshot showing NR RRC packets after applying `nr-rrc`. — 5 points
-![[Pasted image 20260923083945.png]]
+![](attachements/Pasted%20image%2020260923083945.png)
 
 ---
 
@@ -145,11 +145,11 @@ Complete the table:
 
 | Component      | IP address     | Evidence from the capture                                                                                                            |
 | -------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| UE PDU address | 10.0.0.2       | ![[Pasted image 20260923090638.png]]<br>The inner source address, 10.0.0.2, is the UE PDU adress that send a packet to a target IP.  |
-| gNB            | 192.168.70.129 | ![[Pasted image 20260923085425.png]]<br>The gNB ask the AMF with the "NGSetupRequest", the source adress is the gNB Adress           |
-| AMF            | 192.168.70.132 | ![[Pasted image 20260923085442.png]]<br>The AMF respond to the gNB with the "NGSetupResponse", the source adress is the AMF Adress   |
-| UPF            | 192.168.70.134 | ![[Pasted image 20260923090535.png]]The adress 192.168.70.134 is the UPF adress that receive the encapsulate packet from the gNB     |
-| Data Network   | 192.168.70.135 | ![[Pasted image 20260923090918.png]]<br>The inner target address is the Destination Address that receive packet from the UE PDU.<br> |
+| UE PDU address | 10.0.0.2       | ![](attachements/Pasted%20image%2020260923090638.png)<br>The inner source address, 10.0.0.2, is the UE PDU adress that send a packet to a target IP.  |
+| gNB            | 192.168.70.129 | ![](attachements/Pasted%20image%2020260923085425.png)<br>The gNB ask the AMF with the "NGSetupRequest", the source adress is the gNB Adress           |
+| AMF            | 192.168.70.132 | ![](attachements/Pasted%20image%2020260923085442.png)<br>The AMF respond to the gNB with the "NGSetupResponse", the source adress is the AMF Adress   |
+| UPF            | 192.168.70.134 | ![](attachements/Pasted%20image%2020260923090535.png)The adress 192.168.70.134 is the UPF adress that receive the encapsulate packet from the gNB     |
+| Data Network   | 192.168.70.135 | ![](attachements/Pasted%20image%2020260923090918.png)<br>The inner target address is the Destination Address that receive packet from the UE PDU.<br> |
 
 Complete the interface table:
 
@@ -195,15 +195,15 @@ You may also try these specific filters:
 ```wireshark
 nr-rrc.rrcSetupRequest_element
 ```
-![[Pasted image 20260923095757.png]]
+![](attachements/Pasted%20image%2020260923095757.png)
 ```wireshark
 nr-rrc.rrcSetup_element
 ```
-![[Pasted image 20260923095811.png]]
+![](attachements/Pasted%20image%2020260923095811.png)
 ```wireshark
 nr-rrc.rrcSetupComplete_element
 ```
-![[Pasted image 20260923095830.png]]
+![](attachements/Pasted%20image%2020260923095830.png)
 
 Complete the table:
 
@@ -216,7 +216,7 @@ Complete the table:
 Answer the following questions:
 
 1. What is the establishment cause in `RRCSetupRequest`?
-![[Pasted image 20260923094114.png]]
+![](attachements/Pasted%20image%2020260923094114.png)
 The establishement cause is mo-Signalling
 2. What SRB does `RRCSetupRequest` use? Why?
 It use SRB0 unsecure because a session is not yet established (SRB1)
@@ -225,7 +225,7 @@ The gNB sends the RRCSetup
 4. Which signaling radio bearer is used after the RRC connection is established?
 After the connection is established, it use SRB1
 5. Which NAS message is carried inside `RRCSetupComplete`?
-![[Pasted image 20260923094717.png]]
+![](attachements/Pasted%20image%2020260923094717.png)
 The NAS message carries a Registration request
 6. At the end of this procedure, is the UE only connected to the gNB, or is it already registered with the 5G Core? Explain.
 It's only connected to the gNB, there was no registration done 
@@ -257,7 +257,7 @@ RRCSetupComplete
 → dedicatedNAS-Message
 → Registration Request
 ```
-![[Pasted image 20260923095728.png]]
+![](attachements/Pasted%20image%2020260923095728.png)
 
 
 Then apply:
@@ -273,7 +273,7 @@ InitialUEMessage
 → NAS-PDU
 → Registration Request
 ```
-![[Pasted image 20260923100015.png]]
+![](attachements/Pasted%20image%2020260923100015.png)
 Compare the two packets:
 
 | Stage      | Protocol message      | Sender → receiver | Encapsulated information                |
@@ -327,13 +327,13 @@ gtp || icmp
 ```
 
 Find one ICMP Echo Request and its Echo Reply. Confirm that the UE's IP packet is carried inside GTP-U between the gNB and UPF.
-![[Pasted image 20260923104456.png]]
+![](attachements/Pasted%20image%2020260923104456.png)
 
 Answer:
 1. What IPv4 address was assigned to the UE?
 10.0.0.2
 2. How many ICMP Echo Request/Reply pairs are present?
-![[Pasted image 20260923105658.png]]
+![](attachements/Pasted%20image%2020260923105658.png)
 There are 20 pairs of Request/Reply
 3. What does the successful Echo Reply prove about the UE connection?
 This imply the UE has a complete and working connectivity 
