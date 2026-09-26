@@ -143,8 +143,8 @@ icmp
 
 Complete the table:
 
-| Component      | IP address     | Evidence from the capture                                                                                                            |
-| -------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Component      | IP address     | Evidence from the capture                                                                                                                             |
+| -------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | UE PDU address | 10.0.0.2       | ![](attachements/Pasted%20image%2020260923090638.png)<br>The inner source address, 10.0.0.2, is the UE PDU adress that send a packet to a target IP.  |
 | gNB            | 192.168.70.129 | ![](attachements/Pasted%20image%2020260923085425.png)<br>The gNB ask the AMF with the "NGSetupRequest", the source adress is the gNB Adress           |
 | AMF            | 192.168.70.132 | ![](attachements/Pasted%20image%2020260923085442.png)<br>The AMF respond to the gNB with the "NGSetupResponse", the source adress is the AMF Adress   |
@@ -375,6 +375,7 @@ Statistics → Flow Graph → Displayed packets
 
 However, the OAI RAN packets use loopback addresses. Manually separate the UE and gNB in your final diagram according to the RRC message direction.
 
+![](attachements/SequenceDiagramWireshark.png)
 ### Checkpoint 6: Final Sequence Diagram — 5 points
 
 - Include the required components and signaling stages. — 3 points
