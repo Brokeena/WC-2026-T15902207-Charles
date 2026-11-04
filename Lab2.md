@@ -376,11 +376,11 @@ PRACH is used to send a random-access preamble. Its configuration index is not t
 
 Complete the table using the supplied scenario mapping, the SIB1 reference configurations from Task 4, and your throughput results:
 
-| Scenario | TDD setting | Traffic direction | Is the setting suitable for this direction? Why?                                                          |
-| -------- | ----------- | ----------------- | --------------------------------------------------------------------------------------------------------- |
-| A        | DL-heavy    | Downlink          | Yes, it assigns 104 of 140 symbols to DL over 5 ms, providing more opportunities for downlink traffic.    |
-| B        | DL-heavy    | Uplink            | No, only 32 of 140 symbols are configured for UL (22.86%), which can limit uplink capacity.               |
-| C        | Balanced    | Uplink            | Yes, it provides 64 UL symbols over 5 ms (45.71%), giving uplink traffic more transmission opportunities. |
+| Scenario | TDD setting | Traffic direction | Is the setting suitable for this direction? Why?                                                                                |
+| -------- | ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| A        | DL-heavy    | Downlink          | Yes, it assigns 104 of 140 symbols to DL over 5 ms, providing more opportunities for downlink traffic.                          |
+| B        | DL-heavy    | Uplink            | Less suitable for heavy uplink traffic, only 32 of 140 symbols are configured for UL (22.86%), which can limit uplink capacity. |
+| C        | Balanced    | Uplink            | Yes, it provides 64 UL symbols over 5 ms (45.71%), giving uplink traffic more transmission opportunities.                       |
 
 Use these ideas:
 
@@ -413,15 +413,15 @@ Choose a packet that contains two IPv4 headers. In the packet details, expand:
 
 Record the following information from one packet:
 
-|Item|Value|
-|---|---|
-|Scenario capture filename||
-|Packet number||
-|Outer source IP||
-|Outer destination IP||
-|Inner source IP||
-|Inner destination IP||
-|TEID||
+| Item                      | Value                               |
+| ------------------------- | ----------------------------------- |
+| Scenario capture filename | scenario-a-dl-heavy-downlink.pcapng |
+| Packet number             | 1831                                |
+| Outer source IP           | 192.168.70.129                      |
+| Outer destination IP      | 192.168.70.134                      |
+| Inner source IP           | 10.0.0.6                            |
+| Inner destination IP      | 192.168.70.135                      |
+| TEID                      | 0x00000011 (17)                     |
 
 Meaning:
 
@@ -430,6 +430,9 @@ Meaning:
 - **TEID:** Identifies the GTP-U tunnel at the receiving endpoint.
 
 Take one screenshot showing the selected packet and these fields.
+
+![](attachements/Pasted%20image%2020261104115059.png)
+*scenario-a-dl-heavy-downlink.pcapng packet 1831*
 
 > Some GTP packets are echo or control-related packets. Select one that contains an inner IPv4 packet.
 
@@ -446,17 +449,25 @@ tcp.analysis.retransmission
 ```
 
 Record the number of displayed packets:
+![](attachements/Pasted%20image%2020261104115454.png)
+*scenario a tcp.analysis.retransmission packets*
 
-|Scenario|Displayed TCP retransmissions|
-|---|---|
-|A||
-|B||
-|C||
+![](attachements/Pasted%20image%2020261104115540.png)
+*scenario b tcp.analysis.retransmission packets*
+
+![](attachements/Pasted%20image%2020261104115608.png)
+*scenario c tcp.analysis.retransmission packets*
+
+| Scenario | Displayed TCP retransmissions |
+| -------- | ----------------------------- |
+| A        | 14                            |
+| B        | 12                            |
+| C        | 12                            |
 
 > Report the number displayed by Wireshark using the specified filter. Counts may vary with Wireshark analysis settings. Include screenshots showing the filter and displayed count for each scenario. The filter includes any TCP flows that Wireshark can decode in the capture; a displayed retransmission is not, by itself, proof of loss in the UDP test.
 
 **Question:** Do these TCP retransmissions directly represent lost UDP performance packets?
-
+> No. The performance test uses UDP, while iperf3 also uses a separate TCP control connection. The filter reports Wireshark’s detected TCP retransmissions, which do not directly measure UDP packet loss.
 ## 10. Task 8 — RTT and Packet Interval
 
 Use a **scenario capture** for both parts of this task.
@@ -470,10 +481,12 @@ tcp.analysis.ack_rtt
 ```
 
 Select one packet from the iperf3 TCP control connection and record its ACK RTT:
+![](attachements/Pasted%20image%2020261104120105.png)
+*scenario-a-dl-heavy-downlink TCP packet*
 
-|Scenario|Packet number|Example TCP ACK RTT|
-|---|---|---|
-|A, B, or C|||
+| Scenario | Packet number | Example TCP ACK RTT |
+| -------- | ------------- | ------------------- |
+| A        | 94621         | 58.884 ms           |
 
 This value is the RTT of the TCP control connection. It is not the RTT of the UDP data packets.
 
@@ -490,10 +503,12 @@ Time delta from previous displayed frame
 ```
 
 Record the scenario, display filter, packet numbers, and time interval.
+![](attachements/Pasted%20image%2020261104120918.png)
+*UDP packet interval*
 
-|Scenario|Display filter|Packet numbers|Time interval|
-|---|---|---|---|
-|||||
+| Scenario | Display filter                               | Packet numbers  | Time interval |
+| -------- | -------------------------------------------- | --------------- | ------------- |
+| A        | udp.stream eq 519 && frame.interface_id == 1 | 84791 and 84793 | 0.072 ms      |
 
 **Note:** The time interval depends on the applied display filter. Make sure the selected packets are distinct data packets, not duplicated observations from different capture points. Do not use their interval to infer the TDD slot pattern.
 
@@ -502,13 +517,21 @@ Record the scenario, display filter, packet numbers, and time interval.
 Answer each question in two or three sentences:
 
 1. Does Scenario A use a TDD setting that matches its traffic direction?
+> Yes. Scenario A carries downlink traffic, and its DL-heavy reference configuration assigns 104 of 140 symbols to downlink over 5 ms, providing more downlink transmission opportunities.
 2. Why is Scenario B expected to have limited uplink resources? Cite a parameter or count from the DL-heavy SIB1 reference configuration.
+> Scenario B uses the DL-heavy reference configuration, where nrofUplinkSlots = 2 and nrofUplinkSymbols = 4 within a 5 ms period. This provides only 32 UL symbols out of 140, or 22.86%, which can limit capacity under heavy uplink demand.
 3. How much does uplink throughput change from B to C?
+> Uplink throughput increases from 109.12 Mbps in B to 124.42 Mbps in C. This is an increase of approximately 15.30 Mbps, or 14.02%.
 4. What negative result, if any, is visible in C? Support your answer with packet loss or jitter values.
+> Packet loss increases from 0.236% in B to 2.134% in C. Jitter also increases from 0.116 ms to 0.162 ms, so C’s higher throughput comes with more packet loss and less consistent packet arrival timing.
 5. Why can increasing UL resources improve uplink throughput?
+> More configured UL symbols provide more opportunities to schedule and transmit uplink data. The balanced configuration supplies 64 UL symbols per 5 ms compared with DL-heavy’s 32, although actual throughput also depends on scheduling, overhead, radio conditions, and offered traffic.
 6. Is adding more UL resources always the best solution? Explain using throughput and packet loss.
+> No. Although C achieves higher uplink throughput, it also has higher packet loss, so the preferred setting depends on the application’s performance requirements. Allocating more resources to UL can also reduce the resources available for DL.
 7. Suggest one simple follow-up test that could improve throughput without producing too much packet loss.
+> Keep the balanced TDD configuration and repeat the UDP test at several offered sending rates, starting below the original rate and increasing gradually. Compare received throughput and packet loss to find the highest useful throughput that stays within an acceptable loss threshold.
 8. What can the configuration captures tell you that the iperf3 JSON cannot? Why are separately recorded configuration captures not direct proof of the configuration during an earlier test?
+> SIB1 captures show how radio time is divided between downlink and uplink, while iperf3 JSON files show traffic direction and performance. Since the captures were recorded separately from the tests, we rely on the instructor’s mapping to connect each configuration to its scenario.
 
 ## 12. Submission Checklist
 
