@@ -234,19 +234,25 @@ Confirm that the selected TDD fields are inside **SIB1**. If a filter is not rec
 
 ### 4.3 Record the TDD Parameters
 
+![](attachements/Pasted%20image%2020261104101602.png)
+*tdd-dlheavy-sib1 pattern1*
+
+![](attachements/Pasted%20image%2020261104102011.png)
+*tdd-balanced-sib1 pattern1*
+
 Complete the table for `pattern1`:
 
-|Item|DL-heavy: A/B|Balanced: C|
-|---|---|---|
-|Configuration capture filename|||
-|SIB1 packet number|||
-|`referenceSubcarrierSpacing` (kHz)|||
-|`dl-UL-TransmissionPeriodicity` (ms)|||
-|`nrofDownlinkSlots`|||
-|`nrofDownlinkSymbols`|||
-|`nrofUplinkSlots`|||
-|`nrofUplinkSymbols`|||
-|Is `pattern2` present?|||
+| Item                                 | DL-heavy: A/B            | Balanced: C              |
+| ------------------------------------ | ------------------------ | ------------------------ |
+| Configuration capture filename       | tdd-dl-heavy-sib1.pcapng | tdd-balanced-sib1.pcapng |
+| SIB1 packet number                   | 2                        | 2                        |
+| `referenceSubcarrierSpacing` (kHz)   | 30 kHz                   | 30 kHz                   |
+| `dl-UL-TransmissionPeriodicity` (ms) | 5 ms                     | 2.5 ms                   |
+| `nrofDownlinkSlots`                  | 7                        | 2                        |
+| `nrofDownlinkSymbols`                | 6                        | 6                        |
+| `nrofUplinkSlots`                    | 2                        | 2                        |
+| `nrofUplinkSymbols`                  | 4                        | 4                        |
+| Is `pattern2` present?               | No                       | No                       |
 
 If `pattern2` is present, add another table containing its period and four slot/symbol counts. It uses the same reference SCS.
 
@@ -260,12 +266,12 @@ A spreadsheet, a drawing tool, or a hand-drawn diagram is acceptable. Include th
 
 For the normal cyclic prefix used in this exercise, each reference slot contains **14 OFDM symbols**, numbered **0–13**. Use the SIB1 **reference SCS** to construct the common pattern:
 
-|Reference SCS|Reference slot duration|
-|---|---|
-|15 kHz|1 ms|
-|30 kHz|0.5 ms|
-|60 kHz|0.25 ms|
-|120 kHz|0.125 ms|
+| Reference SCS | Reference slot duration |
+| ------------- | ----------------------- |
+| 15 kHz        | 1 ms                    |
+| 30 kHz        | 0.5 ms                  |
+| 60 kHz        | 0.25 ms                 |
+| 120 kHz       | 0.125 ms                |
 
 ```
 Number of reference slots in a pattern = Pattern period ÷ Reference slot duration
@@ -294,36 +300,48 @@ Configured UL symbol share (%) = Configured UL symbols ÷ Total symbols × 100
 
 For two patterns, sum the counts and durations of both patterns before calculating the share. These are symbol-count shares of the common configuration, not exact airtime measurements or measured throughput shares.
 
-|TDD setting|Repeating duration (ms)|Total reference slots|DL symbols|UL symbols|Flexible symbols|Configured UL symbol share (%)|
-|---|---|---|---|---|---|---|
-|DL-heavy|||||||
-|Balanced|||||||
+![](attachements/IMG_4124.jpeg)
+*DL-Heavy TDD Allocation diagram*
+
+![](attachements/IMG_4125.jpeg)
+*Balanced TDD Allocation diagram*
+
+| TDD setting | Repeating duration (ms) | Total reference slots | DL symbols | UL symbols | Flexible symbols | Configured UL symbol share (%) |
+| ----------- | ----------------------- | --------------------- | ---------- | ---------- | ---------------- | ------------------------------ |
+| DL-heavy    | 5                       | 10                    | 104        | 32         | 4                | 22.86                          |
+| Balanced    | 2.5                     | 5                     | 34         | 32         | 4                | 45.71                          |
 
 Next, count the symbols over the **same 5 ms interval** shown in your diagrams. Multiply each per-sequence count by the number of complete repetitions in 5 ms. For these captures, 5 ms contains a whole number of repetitions for both configurations.
 
-|TDD setting|Repeating duration (ms)|Repetitions in 5 ms|DL symbols in 5 ms|UL symbols in 5 ms|Flexible symbols in 5 ms|
-|---|---|---|---|---|---|
-|DL-heavy||||||
-|Balanced||||||
+| TDD setting | Repeating duration (ms) | Repetitions in 5 ms | DL symbols in 5 ms | UL symbols in 5 ms | Flexible symbols in 5 ms |
+| ----------- | ----------------------- | ------------------- | ------------------ | ------------------ | ------------------------ |
+| DL-heavy    | 5                       | 1                   | 104                | 32                 | 4                        |
+| Balanced    | 2.5                     | 2                   | 68                 | 64                 | 8                        |
 
 **Question:** Can two patterns have the same UL symbol count per period but provide different numbers of UL symbols per unit time? Explain using your two tables.
 
+> Yes. Both configurations have 32 UL symbols per period, but their periods have different durations. DL-heavy provides 32 UL symbols every 5 ms, while balanced provides 32 every 2.5 ms. Therefore, over the same 5 ms interval, balanced provides 64 UL symbols compared with DL-heavy’s 32.
 ### 4.5 Connect SIB1 to the Performance Results
 
 Use the supplied mapping between the reference configuration captures and scenarios. Complete this table using Tasks 1–3 and your SIB1 analysis:
 
-|Scenario|Reference TDD setting|JSON traffic direction|Configured UL symbol share (%)|Throughput (Mbps)|Packet loss (%)|
-|---|---|---|---|---|---|
-|A|DL-heavy|||||
-|B|DL-heavy|||||
-|C|Balanced|||||
+| Scenario | Reference TDD setting | JSON traffic direction | Configured UL symbol share (%) | Throughput (Mbps) | Packet loss (%) |
+| -------- | --------------------- | ---------------------- | ------------------------------ | ----------------- | --------------- |
+| A        | DL-heavy              | Downlink               | 22.86                          | ~90.65            | ~0.443          |
+| B        | DL-heavy              | Uplink                 | 22.86                          | ~109.12           | ~0.236          |
+| C        | Balanced              | Uplink                 | 45.71                          | ~124.42           | ~2.134          |
 
 Answer:
 
 1. Which decoded TDD parameters differ between DL-heavy and balanced?
+> dl-UL-TransmissionPeriodicity changes from 5 ms for DL-heavy to 2.5 ms for balanced, and nrofDownlinkSlots changes from 7 to 2
 2. Which configuration provides more configured UL symbols per unit time? Support your answer with the diagram and calculated share.
+> Balanced provides more. Its diagram repeats twice within 5 ms, providing 64 UL symbols, while DL-heavy provides 32. The configured UL symbol share is therefore 45.71% for balanced versus 22.86% for DL-heavy.
 3. How does that difference help explain the B/C throughput comparison?
+> Balanced gives Scenario C more uplink transmission opportunities, which can help explain its throughput of 124.42 Mbps compared with 109.12 Mbps in Scenario B
 4. Why can A and B use the same SIB1 TDD configuration even though their traffic directions differ?
+> The TDD configuration defines available downlink, uplink, and flexible resources, but not the direction of a specific iperf3 test. A uses downlink resources, while B uses uplink resources under the same DL-heavy configuration. This pairing comes from the lab’s mapping, not from simultaneous SIB1 captures.
+
 
 > More configured UL resources can provide more opportunities for uplink traffic, but they do not guarantee a proportional throughput increase. Scheduling, radio conditions, overhead, offered traffic, and other radio settings also affect the result. This comparison does not establish that the TDD pattern is the only cause of a performance difference. SIB1 does not show actual slot-by-slot data scheduling. Because the configuration captures were recorded separately, use them as references for the supplied settings, not as independent proof of what was broadcast during each original performance run.
 
@@ -358,11 +376,11 @@ PRACH is used to send a random-access preamble. Its configuration index is not t
 
 Complete the table using the supplied scenario mapping, the SIB1 reference configurations from Task 4, and your throughput results:
 
-|Scenario|TDD setting|Traffic direction|Is the setting suitable for this direction? Why?|
-|---|---|---|---|
-|A|DL-heavy|Downlink||
-|B|DL-heavy|Uplink||
-|C|Balanced|Uplink||
+| Scenario | TDD setting | Traffic direction | Is the setting suitable for this direction? Why?                                                          |
+| -------- | ----------- | ----------------- | --------------------------------------------------------------------------------------------------------- |
+| A        | DL-heavy    | Downlink          | Yes, it assigns 104 of 140 symbols to DL over 5 ms, providing more opportunities for downlink traffic.    |
+| B        | DL-heavy    | Uplink            | No, only 32 of 140 symbols are configured for UL (22.86%), which can limit uplink capacity.               |
+| C        | Balanced    | Uplink            | Yes, it provides 64 UL symbols over 5 ms (45.71%), giving uplink traffic more transmission opportunities. |
 
 Use these ideas:
 
@@ -375,6 +393,8 @@ Use these ideas:
 > The configuration captures show the reference broadcast TDD settings. The iperf3 JSON reports performance; it does not contain TDD parameters. The scenario captures are used for traffic analysis and need not include SIB1.
 
 **Question:** Why might Scenario C achieve better uplink throughput than Scenario B? Refer to your SIB1 diagrams and measured results.
+
+> Scenario C’s balanced configuration provides 64 configured UL symbols per 5 ms, compared with 32 in Scenario B’s DL-heavy configuration. These additional uplink opportunities help explain why C achieves 124.42 Mbps versus B’s 109.12 Mbps. However, the improvement is not proportional to the resource increase, and C also has higher packet loss (2.134% versus 0.236%).
 
 ## 8. Task 6 — Find GTP-U Information
 
@@ -510,7 +530,7 @@ Submit one Markdown file containing:
 
 The PRACH observation is optional and carries no required points. Include all referenced image files alongside the Markdown file, or submit a ZIP containing the report and images.
 
-## [](#13-Grading-Rubric "13-Grading-Rubric")13. Grading Rubric
+## 13. Grading Rubric
 
 |Item|Points|
 |---|---|
@@ -525,7 +545,7 @@ The PRACH observation is optional and carries no required points. Include all re
 |Clear final answers|5|
 |**Total**|**100**|
 
-## [](#References "References")References
+## References
 
 These references support the field names and interpretation. Reading the full specifications is not required.
 
