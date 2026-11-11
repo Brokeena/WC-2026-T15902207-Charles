@@ -185,11 +185,15 @@ Perform three experiments using the same established 5G connection.
 ping -I oaitun_ue1 -s 56 -c 30 -i 0.2 192.168.70.135
 ```
 
+![](lab3-files/Pasted%20image%2020261111132516.png)
+
 **Scenario B — Medium Packets**
 
 ```bash
 ping -I oaitun_ue1 -s 512 -c 30 -i 0.2 192.168.70.135
 ```
+
+![](lab3-files/Pasted%20image%2020261111132549.png)
 
 **Scenario C — Large Packets**
 
@@ -197,29 +201,37 @@ ping -I oaitun_ue1 -s 512 -c 30 -i 0.2 192.168.70.135
 ping -I oaitun_ue1 -s 1200 -c 30 -i 0.2 192.168.70.135
 ```
 
+![](lab3-files/Pasted%20image%2020261111132632.png)
+
 Note: `-s` specifies ICMP payload size, not the complete IP packet size.
 
 Complete the table:
 
 | Scenario | ICMP Payload | Avg. RTT (ms) | Max. RTT (ms) | Packet Loss (%) |
-|---|---:|---:|---:|---:|
-| A | 56 bytes | | | |
-| B | 512 bytes | | | |
-| C | 1200 bytes | | | |
+| -------- | -----------: | ------------: | ------------: | --------------: |
+| A        |     56 bytes |        10.402 |        13.461 |               0 |
+| B        |    512 bytes |        11.037 |        13.791 |               0 |
+| C        |   1200 bytes |        12.874 |        16.892 |               0 |
 
 Calculate the RTT difference:
 
 ```text
 RTT Difference = Average RTT(C) - Average RTT(A)
+			   = 12.874 - 10.402
+			   = 2.472 ms
 ```
 
 **Questions:**
-
 1. Which scenario has the highest average RTT?
+> Scenario C (1200 bytes) has the highest average RTT of 12.874 ms, compared to 11.037 ms for Scenario B and 10.402 ms for Scenario A.
 2. Does increasing packet size always increase RTT in your measurements?
+> Yes. In our measurements, the average RTT increased with packet size. However, this is not always guaranteed because other factors can affect network latency.
 3. Why might a larger packet require more transmission or processing resources?
+> Larger packets contain more data, requiring additional transmission time and processing resources for encoding, modulation, and decoding.
 4. What factors other than packet size could affect RTT in a software-based 5G network?
+> Larger packets contain more data, requiring additional transmission time and processing resources for encoding, modulation, and decoding.
 5. Can these results be interpreted as real over-the-air 5G latency? Explain.
+> No. RFsimulator replaces physical radio transmission with software-based communication. Therefore, the measurements do not account for real-world factors such as interference, signal attenuation, and wireless propagation conditions.
 
 Do not assume that RTT must increase with packet size. Use your measured values to support your explanation.
 
