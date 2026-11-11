@@ -17,7 +17,7 @@ After completing this lab, you should be able to:
 4. Measure user-plane connectivity under different packet sizes.
 5. Diagnose connection failures using OAI and 5GC logs.
 6. Explain the limitations of a software-simulated 5G network.
-
+****
 ## 2. Experimental Environment
 
 Use the *OAI v2.4.0 Build Guide* to prepare the environment before class.
@@ -108,25 +108,30 @@ sudo ss -ltnp | grep 4043
 ```
 
 The default RFsimulator port in this experiment is 4043.
+![](lab3-files/Pasted%20image%2020261111130825.png)
+*Verification of the Established RFsimulator TCP Connection Between gNB and nrUE*
 
 Complete the table:
 
-| Item | Observed Value |
-|---|---|
-| gNB process ID | |
-| nrUE process ID | |
-| RFsimulator transport protocol | |
-| RFsimulator port | |
-| TCP connection state | |
-| Connected process(es) | |
+| Item                           | Observed Value                                           |
+| ------------------------------ | -------------------------------------------------------- |
+| gNB process ID                 | 10199, 10200                                             |
+| nrUE process ID                | 34875, 34876                                             |
+| RFsimulator transport protocol | TCP                                                      |
+| RFsimulator port               | 4043                                                     |
+| TCP connection state           | `ESTAB` (Established)                                    |
+| Connected process(es)          | `nr-softmodem` (PID 10199), `nr-uesoftmodem` (PID 34875) |
 
 Take one screenshot showing the TCP connection.
 
 **Questions:**
 
 1. Why does RFsimulator use a TCP connection instead of a physical antenna?
+> RFsimulator uses TCP to exchange simulated IQ samples between the gNB and UE, allowing wireless communication to be tested without physical RF hardware.
 2. Are the TCP packets exchanged by RFsimulator the same as the UE's application-layer IP packets?
+> No. RFsimulator TCP packets transport IQ samples representing radio signals, whereas the UE's application-layer IP packets travel through the established 5G user plane.
 3. Does using RFsimulator mean that the UE and gNB are performing no physical-layer processing? Explain.
+> No. The UE and gNB still perform physical-layer processing, including OFDM modulation and demodulation. RFsimulator replaces the physical radio interface, not the entire PHY layer.
 
 ## 5. Task 3 — Verify End-to-End Connectivity
 
