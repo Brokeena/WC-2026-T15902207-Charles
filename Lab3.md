@@ -149,24 +149,29 @@ ping -I oaitun_ue1 -c 10 192.168.70.135
 
 Record:
 
-| Measurement | Observed Value |
-|---|---|
-| UE IP address | |
-| Destination IP | |
-| Packets transmitted | |
-| Packets received | |
-| Packet loss (%) | |
-| Minimum RTT (ms) | |
-| Average RTT (ms) | |
-| Maximum RTT (ms) | |
+| Measurement         | Observed Value |
+| ------------------- | -------------- |
+| UE IP address       | 10.0.0.2       |
+| Destination IP      | 192.168.70.135 |
+| Packets transmitted | 10             |
+| Packets received    | 10             |
+| Packet loss (%)     | 0              |
+| Minimum RTT (ms)    | 7.874 ms       |
+| Average RTT (ms)    | 11.669 ms      |
+| Maximum RTT (ms)    | 17.072 ms      |
 
 Take a screenshot of the Ping result.
+![](lab3-files/Pasted%20image%2020261111131656.png)
+*Connectivity test*
 
 **Questions:**
 
 1. Why must Ping use the `oaitun_ue1` interface in this experiment?
+> Because oaitun_ue1 is the simulated UE's tunnel interface. Using it ensures that the ICMP packets travel through the 5G user plane instead of the VM's normal network interface.
 2. Does successful Registration guarantee successful user-plane connectivity?
+> No. Registration only confirms that the UE is registered with the 5G Core. A successful PDU session and correctly configured userplane routing are also required.
 3. What does a successful Ping prove, and what does it not prove about the simulated 5G system?
+> A successful ping proves that IP packets can travel between the UE and destination through the simulated 5G network. However, it does not prove that the network would achieve the same latency, reliability or performance over a real wireless channel.
 
 ## 6. Task 4 — Investigate the Effect of Packet Size
 
