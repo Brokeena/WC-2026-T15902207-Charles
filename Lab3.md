@@ -72,6 +72,7 @@ Take screenshots showing the gNB and UE successfully connected.
 [NAS] Received PDU Session Establishment Accept, UE IPv4: 10.0.0.2
 [OIP] Interface oaitun_ue1 successfully configured, IPv4 10.0.0.2
 ```
+*Relevant logs*
 
 **Questions:**
 
@@ -262,6 +263,28 @@ sudo ./nr-uesoftmodem \
 
 The IMSI `001010000000099` is not provisioned in the standard classroom subscriber configuration. Verify this assumption against the instructor's database before class.
 
+![](lab3-files/Pasted%20image%2020261111134733.png)
+*Incorrect IMSI UE launch*
+
+```console
+[SIM] UICC simulation: IMSI=001010000000099
+```
+*Relevant logs*
+
+![](lab3-files/Pasted%20image%2020261111134855.png)
+*Incorrect IMSI UE launch*
+
+```console
+[PHY] Initial sync successful, PCI: 0
+[PHY] UE synchronized!
+[NR_MAC] 4-Step RA procedure succeeded.
+[NR_RRC] State = NR_RRC_CONNECTED
+[NAS] Generate Initial NAS Message: Registration Request
+[NAS] [UE 0] Received NAS_DOWNLINK_DATA_IND type FGS_REGISTRATION_REJECT with length 4
+[NAS] Received Registration reject message too short
+```
+*Relevant logs*
+
 Observe the UE and AMF logs.
 
 ```bash
@@ -269,18 +292,32 @@ cd ~/oai-cn5g
 docker compose logs --since=2m oai-amf
 ```
 
+![](lab3-files/Pasted%20image%2020261111134340.png)
+*UE/AMF logs*
+
+```console
+[06:39:16.633] Got UE Authentication from AUSF:
+{"cause":"CONTEXT_NOT_FOUND","detail":"Resource corresponding to User imsi-001010000000099 not found","status":404}
+
+[06:39:16.637] Request Authentication Vectors failure
+
+[06:39:16.637] 5GMM state transition: COMM-PROC-INIT -> 5GMM-DEREGISTERED (event: [REGISTRATION_REJECT_SENT])
+
+[06:39:16.638] Initiating RegistrationReject
+```
+
 Allow time for registration attempts, then stop the UE.
 
 Complete the table:
 
-| Item | Observation |
-|---|---|
-| Modified parameter | |
-| UE synchronized with gNB? | |
-| RRC connection established? | |
-| Registration successful? | |
-| Error or rejection evidence | |
-| Likely cause | |
+| Item                        | Observation                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| Modified parameter          | IMSI changed from 001010000000001 to 001010000000099           |
+| UE synchronized with gNB?   | Yes                                                            |
+| RRC connection established? | Yes                                                            |
+| Registration successful?    | No                                                             |
+| Error or rejection evidence | `FGS_REGISTRATION_REJECT`; AUSF `CONTEXT_NOT_FOUND` (HTTP 404) |
+| Likely cause                | Incorrect IMSI not found in the subscriber database            |
 
 If the expected registration rejection does not appear, report the actual logs instead of inventing a failure message.
 
@@ -297,9 +334,13 @@ Confirm that the UE successfully registers again and that Ping works.
 **Questions:**
 
 1. Why can the UE potentially synchronize with the gNB even when the IMSI is incorrect?
+> UE synchronization relies on physical-layer signals transmitted by the gNB, not on the IMSI. Therefore, the UE can synchronize and establish an RRC connection even with an incorrect IMSI.
 2. Which network function is involved in UE authentication?
+> The AUSF (Authentication Server Function) handles UE authentication, working with the UDM. In our experiment, the AUSF returned CONTEXT_NOT_FOUND (HTTP 404) because the subscriber was not found.
 3. Why does changing an IMSI affect Registration but not the RFsimulator TCP connection itself?
+> The IMSI is used for subscriber identification and authentication during Registration. RFsimulator uses TCP to exchange IQ samples independently of the UE's subscriber identity.
 4. What evidence proves that restoring the correct configuration solved the problem?
+> The expected evidence is a successful Registration Accept, followed by PDU Session Establishment Accept and successful Ping replies through oaitun_ue1. These checks would confirm that restoring the original IMSI (001010000000001) recovered the connection.
 
 Submit evidence from both the failed and recovered connections.
 
