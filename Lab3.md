@@ -52,15 +52,15 @@ Start the gNB and nrUE using the commands in the Build Guide.
 
 Observe their terminal outputs and locate evidence of the following stages.
 
-| Stage                        | Successful? | Evidence from logs                                                                                                                                                                               |
-| ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| CN5G initialization          | Yes         | ![](lab3-files/Pasted%20image%2020261111123555.png)<br>                                                                                                                                          |
-| gNB NG Setup                 | Yes         | ![](lab3-files/Pasted%20image%2020261111124003.png)<br><br>`[NGAP] Received NGSetupResponse from AMF`                                                                                                       |
-| UE synchronization           | Yes         | ![](lab3-files/Pasted%20image%2020261111123905.png)<br>`Initial sync successful, PCI: 0`                                                                                                                    |
-| RRC connection establishment | Yes         | ![](lab3-files/Pasted%20image%2020261111124433.png)<br>`State = NR_RRC_CONNECTED`                                                                                                                           |
-| UE Registration              | Yes         | ![](lab3-files/Pasted%20image%2020261111124818.png)<br>```[NAS] [UE 0] Received NAS_DOWNLINK_DATA_IND type FGS_REGISTRATION_ACCEPT with length 53<br>[NAS] Received Registration Accept with result 3GPP``` |
-| PDU Session Establishment    | Yes         | ![](lab3-files/Pasted%20image%2020261111125051.png)<br>`[NAS] Send NAS_UPLINK_DATA_REQ message(PduSessionEstablishRequest)`                                                                                 |
-| UE tunnel creation           | Yes         | ![](lab3-files/Pasted%20image%2020261111125149.png)<br>`Interface oaitun_ue1 successfully configured, IPv4 10.0.0.2`                                                                                        |
+| Stage                        | Successful? | Evidence from logs                                                                                                                                                                                                                                             |
+| ---------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CN5G initialization          | Yes         | ![](lab3-files/Pasted%20image%2020261111123555.png)<br><br>Relevant logs :<br>*CN5G container startup*                                                                                                                                                         |
+| gNB NG Setup                 | Yes         | ![](lab3-files/Pasted%20image%2020261111124003.png)<br>*Successful gNB NG Setup with the AMF*<br><br>Relevant logs :<br>`[NGAP] Received NGSetupResponse from AMF`                                                                                             |
+| UE synchronization           | Yes         | ![](lab3-files/Pasted%20image%2020261111123905.png)<br>*Successful UE synchronization with the gNB*<br><br>Relevant logs :<br>`Initial sync successful, PCI: 0`                                                                                                |
+| RRC connection establishment | Yes         | ![](lab3-files/Pasted%20image%2020261111124433.png)<br>*UE RRC connection establishment*<br><br>Relevant logs :<br>`State = NR_RRC_CONNECTED`                                                                                                                  |
+| UE Registration              | Yes         | ![](lab3-files/Pasted%20image%2020261111124818.png)<br>*UE Registration Accept*<br><br>Relevant logs :<br>```[NAS] [UE 0] Received NAS_DOWNLINK_DATA_IND type FGS_REGISTRATION_ACCEPT with length 53<br>[NAS] Received Registration Accept with result 3GPP``` |
+| PDU Session Establishment    | Yes         | ![](lab3-files/Pasted%20image%2020261111125051.png)<br>*PDU Session Establishment Accept*<br><br>Relevant logs :<br>`[NAS] Send NAS_UPLINK_DATA_REQ message(PduSessionEstablishRequest)`                                                                       |
+| UE tunnel creation           | Yes         | ![](lab3-files/Pasted%20image%2020261111125149.png)<br>*UE tunnel creation with IPv4 address 10.0.0.2*<br><br>Relevant logs :<br>`Interface oaitun_ue1 successfully configured, IPv4 10.0.0.2`                                                                 |
 
 Take screenshots showing the gNB and UE successfully connected.
 ![](lab3-files/Pasted%20image%2020261111125524.png)
@@ -188,6 +188,8 @@ ping -I oaitun_ue1 -s 56 -c 30 -i 0.2 192.168.70.135
 
 ![](lab3-files/Pasted%20image%2020261111132516.png)
 
+*Scenario A: Ping results with a 56-byte ICMP payload*
+
 **Scenario B — Medium Packets**
 
 ```bash
@@ -196,6 +198,8 @@ ping -I oaitun_ue1 -s 512 -c 30 -i 0.2 192.168.70.135
 
 ![](lab3-files/Pasted%20image%2020261111132549.png)
 
+*Scenario B: Ping results with a 512-byte ICMP payload*
+
 **Scenario C — Large Packets**
 
 ```bash
@@ -203,6 +207,8 @@ ping -I oaitun_ue1 -s 1200 -c 30 -i 0.2 192.168.70.135
 ```
 
 ![](lab3-files/Pasted%20image%2020261111132632.png)
+
+*Scenario C: Ping results with a 1200-byte ICMP payload*
 
 Note: `-s` specifies ICMP payload size, not the complete IP packet size.
 
@@ -230,7 +236,7 @@ RTT Difference = Average RTT(C) - Average RTT(A)
 3. Why might a larger packet require more transmission or processing resources?
 > Larger packets contain more data, requiring additional transmission time and processing resources for encoding, modulation, and decoding.
 4. What factors other than packet size could affect RTT in a software-based 5G network?
-> Larger packets contain more data, requiring additional transmission time and processing resources for encoding, modulation, and decoding.
+> RTT can be affected by CPU load, operating system scheduling, memory usage, and network buffering.
 5. Can these results be interpreted as real over-the-air 5G latency? Explain.
 > No. RFsimulator replaces physical radio transmission with software-based communication. Therefore, the measurements do not account for real-world factors such as interference, signal attenuation, and wireless propagation conditions.
 
@@ -305,6 +311,7 @@ docker compose logs --since=2m oai-amf
 
 [06:39:16.638] Initiating RegistrationReject
 ```
+*Relevant logs*
 
 Allow time for registration attempts, then stop the UE.
 
@@ -330,6 +337,9 @@ Restart the nrUE using:
 ```
 
 Confirm that the UE successfully registers again and that Ping works.
+![](lab3-files/Pasted%20image%2020261115164520.png)
+*Successful Ping through oaitun_ue1 after restoring the original IMSI*
+
 
 **Questions:**
 
@@ -340,7 +350,7 @@ Confirm that the UE successfully registers again and that Ping works.
 3. Why does changing an IMSI affect Registration but not the RFsimulator TCP connection itself?
 > The IMSI is used for subscriber identification and authentication during Registration. RFsimulator uses TCP to exchange IQ samples independently of the UE's subscriber identity.
 4. What evidence proves that restoring the correct configuration solved the problem?
-> The expected evidence is a successful Registration Accept, followed by PDU Session Establishment Accept and successful Ping replies through oaitun_ue1. These checks would confirm that restoring the original IMSI (001010000000001) recovered the connection.
+> After restoring the original IMSI (`001010000000001`), the UE successfully exchanged 5 ICMP packets with the external data network, achieving 0% packet loss and an average RTT of 10.885 ms. This confirms that end-to-end user-plane connectivity was restored.
 
 Submit evidence from both the failed and recovered connections.
 
@@ -351,31 +361,40 @@ Your OAI gNB and nrUE perform 5G NR protocol processing even though they do not 
 
 Complete the comparison:
 
-| Feature | OAI RFsimulator | Physical 5G System |
-|---|---|---|
-| gNB and UE protocol stack | | |
-| OFDM signal processing | | |
-| Physical antennas | | |
-| RF hardware impairments | | |
-| Wireless propagation effects | | |
-| 5G Core connectivity | | |
+| Feature                      | OAI RFsimulator | Physical 5G System |
+| ---------------------------- | --------------- | ------------------ |
+| gNB and UE protocol stack    | Yes             | Yes                |
+| OFDM signal processing       | Yes             | Yes                |
+| Physical antennas            | No              | Yes                |
+| RF hardware impairments      | Not inherently  | Yes                |
+| Wireless propagation effects | Not inherently  | Yes                |
+| 5G Core connectivity         | Yes             | Yes                |
 
 **Questions:**
 
 1. Which parts of the 5G system remain functional when physical RF hardware is replaced with RFsimulator?
+> The 5G protocol stack remains functional, including PHY, MAC, RLC, PDCP, RRC, and NAS. OFDM processing, UE Registration, PDU Session Establishment, and 5G Core connectivity are also supported.
 2. Why is RFsimulator useful for testing the 5G protocol stack?
+> RFsimulator allows developers to test and debug 5G communication without expensive radio hardware. It provides a controlled and reproducible environment for analyzing network procedures.
 3. Why might latency and throughput differ between RFsimulator and a real 5G deployment?
+> RFsimulator performance depends on CPU processing, operating system scheduling, and virtualization overhead. Real 5G networks are also affected by signal attenuation, interference, fading, and wireless propagation conditions.
 4. What would need to change if you wanted to test a physical UE instead of OAI nrUE?
+> The simulated RF interface would need to be replaced with compatible RF hardware, such as a USRP and antennas. A physical 5G device with a properly configured SIM would also be required, along with authorized radio spectrum for transmission.
 
 ## 9. Final Analysis
 
 Answer each question in three to five sentences.
 
 1. Describe the complete process from starting the OAI 5GC to successful user-plane connectivity.
+> First, the 5G Core Network is started using Docker, followed by the gNB, which establishes an NG connection with the AMF. The UE then synchronizes with the gNB, establishes an RRC connection, and completes Registration. After successful PDU Session Establishment, the UE receives the IP address 10.0.0.2 through the oaitun_ue1 interface. Finally, successful Ping tests with 0% packet loss confirm end-to-end user-plane connectivity.
 2. Explain the difference between an RFsimulator TCP connection and a 5G PDU Session.
+> RFsimulator uses a TCP connection on port 4043 to exchange IQ samples between the gNB and UE, replacing the physical radio interface. In contrast, a 5G PDU Session provides user-plane connectivity between the UE and the data network through the 5G Core. Therefore, RFsimulator transports simulated radio signals, while the PDU Session enables the transmission of application data and IP packets.
 3. Based on your measurements, how did packet size affect RTT and packet loss?
+> The average RTT increased with packet size, from 10.402 ms for 56-byte packets to 11.037 ms for 512-byte packets and 12.874 ms for 1200-byte packets. The difference between the smallest and largest packets was 2.472 ms. All three scenarios showed 0% packet loss, indicating reliable communication during the experiments. However, virtualization and CPU scheduling may also have influenced the measured RTT.
 4. Describe the registration failure you introduced and explain how you diagnosed and recovered from it.
+> The UE's IMSI was changed from 001010000000001 to 001010000000099, causing a Registration failure. Although synchronization and RRC connection establishment succeeded, the AUSF returned an HTTP 404 error (`CONTEXT_NOT_FOUND`) because the subscriber was not found. The AMF subsequently initiated a Registration Reject. After restoring the original IMSI, a Ping test confirmed successful connectivity with 5 packets received, 0% packet loss, and an average RTT of 10.885 ms.
 5. Identify two limitations of this simulated environment and explain how they might affect experimental results.
+> The first limitation is the absence of real wireless propagation effects, such as interference, fading, and signal attenuation, which can significantly affect 5G performance. The second limitation is the dependence on software processing and virtualization, where CPU load and operating system scheduling can influence latency and throughput. Consequently, measurements obtained using RFsimulator may differ from those of a real 5G deployment. These limitations mean that simulated results cannot be directly interpreted as real-world wireless performance.
 
 ## 10. Submission Checklist
 
