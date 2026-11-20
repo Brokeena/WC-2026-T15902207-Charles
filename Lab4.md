@@ -193,7 +193,7 @@ sudo ./nr-uesoftmodem \
 ![](lab4-files/Pasted%20image%2020261118115127.png)
 *Terminal 4 - logs I*
 ![](lab4-files/Pasted%20image%2020261118115210.png)
-*Terminal 4 - logs I*
+*Terminal 4 - logs II*
 
 
 ```console
@@ -285,6 +285,12 @@ sctp
 f1ap
 ```
 
+![](lab4-files/Pasted%20image%2020261118123708.png)
+*sctp filter - SCTP Association, F1 Setup Request/Response, and DU Configuration Update*
+
+![](lab4-files/Pasted%20image%2020261118123741.png)
+*f1ap filter - Initial UL RRC Message Transfer, DL/UL RRC Message Transfer, and UE Context Setup Request/Response.*
+
 Find and record these messages:
 
 | Message | Typical direction | Meaning |
@@ -299,15 +305,20 @@ Find and record these messages:
 | UE Context Setup Request / Response | CU ↔ DU | Establish UE-specific resources/context |
 | DL RRC Message Transfer (RRC Reconfiguration) | CU → DU | CU sends further RRC configuration |
 
-**Observed classroom sequence:** The successful capture contained SCTP association, F1 Setup Request/Response, DU Configuration Update/Acknowledgement, RRC Setup messages, Authentication signaling carried through RRC, UE Context Setup/Modification, and RRC Reconfiguration. The exact packet numbers and timing are **not fixed**.
+**Observed classroom sequence:** The successful capture contained SCTP association, F1 Setup Request/Response, DU Configuration Update/Acknowledgement, RRC Setup messages, Authentication sigInitial UL RRC Message Transfer, DL/UL RRC Message Transfer, and UE Context Setup Request/Response.naling carried through RRC, UE Context Setup/Modification, and RRC Reconfiguration. The exact packet numbers and timing are **not fixed**.
 
 **Questions**
 
 1. Which node initiates F1 Setup, and which acknowledges it?
+> The gNB-DU initiates F1 Setup by sending an F1 Setup Request (packet 5). The gNB-CU acknowledges it with an F1 Setup Response (packet 7).
 2. Explain the difference between SCTP association establishment and F1 Setup.
+> SCTP association establishes the transport connection between CU and DU, while F1 Setup establishes the F1 application-level communication and exchanges configuration information.
 3. How can a NAS Registration Request be transported over F1-C?
+> The NAS Registration Request is encapsulated in an RRC message and forwarded from the DU to the CU using an F1AP UL RRC Message Transfer.
 4. What is the role of UE Context Setup?
+> UE Context Setup establishes the necessary UE-specific resources and radio bearer configurations between the CU and DU to support UE communication.
 5. Does F1 Setup alone prove successful UE Registration? Explain.
+> No. F1 Setup only confirms communication between the CU and DU. Successful UE Registration additionally requires RRC connection establishment and authentication with the 5G Core Network.
 
 **Evidence:** Screenshot with F1 Setup Request/Response and screenshot with at least three UE-associated F1AP messages. Include packet numbers and source/destination addresses.
 
@@ -321,6 +332,9 @@ In the **same PCAP**, apply:
 gtp
 ```
 
+![](lab4-files/Pasted%20image%2020261118124903.png)
+*gtp filter - F1-U GTP-U T-PDU packet showing DU-to-CU user-plane traffic, UDP ports, message type, and TEID.*
+
 If necessary, first check:
 
 ```text
@@ -333,6 +347,12 @@ Directional display filters (based on the observed classroom CU/DU IP pair):
 gtp && ip.src == 127.0.0.4 && ip.dst == 127.0.0.3
 gtp && ip.src == 127.0.0.3 && ip.dst == 127.0.0.4
 ```
+
+![](lab4-files/Pasted%20image%2020261118125022.png)
+*Uplink - 35 packets*
+
+![](lab4-files/Pasted%20image%2020261118125102.png)
+*Downlink - 30 packets*
 
 In the captured GTP-U packet details, inspect:
 
@@ -359,10 +379,15 @@ Identify the interface using the actual source/destination endpoints and configu
 **Questions**
 
 1. Which transport protocol carries F1-U?
+> F1-U uses GTP-U over UDP to transport user-plane data between the CU and DU.
 2. What does a GTP-U **TEID** identify?
+> The TEID (Tunnel Endpoint Identifier) identifies a specific GTP-U tunnel at the receiving endpoint, allowing packets to be associated with the correct user-plane context.
 3. Which direction is `127.0.0.4 → 127.0.0.3` in this setup?
+> It represents uplink traffic from the gNB-DU to the gNB-CU.
 4. How would you distinguish F1-U from N3 in a packet capture?
+> F1-U carries GTP-U traffic between the DU and CU, while N3 carries GTP-U traffic between the CU and UPF. They can be distinguished by their source and destination IP addresses.
 5. Why do F1-C and F1-U use different transport protocols?
+> F1-C uses SCTP for reliable control-plane signaling, while F1-U uses UDP for efficient user-plane data transport with lower transport overhead.
 
 **Evidence:** Screenshot of at least one GTP-U T-PDU, with outer IP addresses, UDP ports, message type, and TEID visible. Record the observed UL and DL packet counts (if both directions are present). Do not assume equal counts.
 
@@ -372,17 +397,19 @@ Identify the interface using the actual source/destination endpoints and configu
 
 Complete the table:
 
-| Feature | Lab 3: Monolithic gNB | Lab 4: CU/DU Split |
-|---|---|---|
-| Number of RAN processes | | |
-| Location of RRC/PDCP | | |
-| Location of RLC/MAC/PHY | | |
-| F1-C interface present? | | |
-| F1-U interface present? | | |
-| UE connected to the same 5GC? | | |
-| End-to-end Ping works? | | |
+| Feature                       | Lab 3: Monolithic gNB | Lab 4: CU/DU Split |
+| ----------------------------- | --------------------- | ------------------ |
+| Number of RAN processes       | 1                     | 2                  |
+| Location of RRC/PDCP          | Monolithic gNB        | gNB-CU             |
+| Location of RLC/MAC/PHY       | Monolithic gNB        | gNB-DU             |
+| F1-C interface present?       | No                    | Yes                |
+| F1-U interface present?       | No                    | Yes                |
+| UE connected to the same 5GC? | Yes                   | Yes                |
+| End-to-end Ping works?        | Yes                   | Yes                |
 
 Explain in **3–5 sentences** why splitting a gNB changes the internal RAN interfaces but does not change the UE's need for synchronization, registration and a PDU session.
+
+> Splitting the gNB separates higher-layer functions in the CU from lower-layer functions in the DU, introducing the F1-C and F1-U interfaces. However, the UE must still synchronize with the radio network and establish an RRC connection. It must then complete Registration with the 5G Core for authentication and network access. Finally, PDU Session Establishment is still required to enable user-plane data communication.
 
 ---
 
