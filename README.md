@@ -29,6 +29,12 @@ In this lab,you will compare three 5-second UDP iperf3 tests. You will learn how
     - - delivery: **[Submission Lab 2](Lab2.md)**.
     -  [ ] Peer review : [Vote the Top3](https://docs.google.com/forms/d/e/1FAIpQLScz-Kt_9ArkXOl8sG99549xqGK7W7vAqoY4lbbc3ph03zvFaw/viewform?usp=publish-editor) (DL: 23:59, Oct.7)
 
+- **LAB3: Deploying an OAI 5G SA Network with RFsimulator**
+    - delivery: **[Submission Lab 3](Lab3.md)**
+
+- **LAB4: 5G CU/DU Split Deployment and F1-C/F1-U Analysis**
+    - delivery: **[Submission Lab 4](Lab4.md)**
+
 
 
 
