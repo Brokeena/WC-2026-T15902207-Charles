@@ -305,7 +305,7 @@ Find and record these messages:
 | UE Context Setup Request / Response | CU ↔ DU | Establish UE-specific resources/context |
 | DL RRC Message Transfer (RRC Reconfiguration) | CU → DU | CU sends further RRC configuration |
 
-**Observed classroom sequence:** The successful capture contained SCTP association, F1 Setup Request/Response, DU Configuration Update/Acknowledgement, RRC Setup messages, Authentication sigInitial UL RRC Message Transfer, DL/UL RRC Message Transfer, and UE Context Setup Request/Response.naling carried through RRC, UE Context Setup/Modification, and RRC Reconfiguration. The exact packet numbers and timing are **not fixed**.
+**Observed sequence:** SCTP association establishment is followed by F1 Setup and DU Configuration Update. UE-associated signaling then includes RRC Setup, NAS authentication carried through RRC message transfers, UE Context Setup, RRC Reconfiguration, and UE Context Modification.
 
 **Questions**
 
@@ -321,6 +321,12 @@ Find and record these messages:
 > No. F1 Setup only confirms communication between the CU and DU. Successful UE Registration additionally requires RRC connection establishment and authentication with the 5G Core Network.
 
 **Evidence:** Screenshot with F1 Setup Request/Response and screenshot with at least three UE-associated F1AP messages. Include packet numbers and source/destination addresses.
+
+| Packet No. | F1AP message / carried RRC message | Source IP (node) | Destination IP (node) | Meaning |
+|---|---|---|---|---|
+| 12 | Initial UL RRC Message Transfer / RRC Setup Request | `127.0.0.4` (DU) | `127.0.0.3` (CU) | DU forwards the UE's initial RRC connection request to the CU. |
+| 13 | DL RRC Message Transfer / RRC Setup | `127.0.0.3` (CU) | `127.0.0.4` (DU) | CU sends RRC Setup toward the UE through the DU. |
+| 14 | UL RRC Message Transfer / RRC Setup Complete | `127.0.0.4` (DU) | `127.0.0.3` (CU) | DU forwards RRC Setup Complete containing the NAS Registration Request. |
 
 ---
 
