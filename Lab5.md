@@ -75,8 +75,12 @@ Run the following command on `Lab5-ue.log`:
 grep -nE 'Starting cell search|Initial sync successful' lab5-artifacts/Lab5-ue.log
 ```
 
+![](lab5-files/Pasted%20image%2020261126112106.png)
+*Cell search and initial synchronization*
+
 Record whether UE synchronization succeeded and the PCI value. Explain: after completing initial synchronization, what is the UE able to do?
 
+> After completing initial synchronization, the UE is synchronized with the gNB in time and frequency and has identified the physical cell. The UE can now read the cell information (MIB and SIB1) and prepare for Random Access.
 #### Step 2: Find MIB and SIB1 — 8 points
 
 In Wireshark, enter:
@@ -87,7 +91,15 @@ nr-rrc
 
 Find one `MIB` packet and one `SIB1` packet. Record the frame number of each and provide screenshots.
 
+![](lab5-files/Pasted%20image%2020261126112521.png)
+*MIB packet (frame 6)*
+
+![](lab5-files/Pasted%20image%2020261126112543.png)
+*SIB1 packet (frame 7)*
+
 MIB and SIB1 are repeatedly broadcast system-information messages. The UE must obtain the common configuration before it can continue the access procedure. Briefly explain the purpose of MIB and SIB1 for UE access.
+
+> The MIB provides basic cell information and helps the UE locate SIB1. The SIB1 provides the configuration needed to perform Random Access and access the cell.
 
 #### Step 3: Find Msg1 PRACH — 8 points
 
@@ -97,11 +109,15 @@ Run the following command on the UE log:
 grep -nE 'PRACH' lab5-artifacts/Lab5-ue.log
 ```
 
+![](lab5-files/Pasted%20image%2020261126112804.png)
+*Msg1 PRACH grep result*
+
 Record the Msg1 log line number. From the line that shows the actual PRACH transmission, find:
 
 ```text
-frame.slot = ______
-preambleIndex = ______
+Msg1 log line number = 81
+frame.slot = 553.19
+preambleIndex = 16
 ```
 
 Next, return to Wireshark. Clear the display filter, press `Cmd/Ctrl + F`, choose **Packet details** as the search scope, and search for:
@@ -110,10 +126,13 @@ Next, return to Wireshark. Clear the display filter, press `Cmd/Ctrl + F`, choos
 RACH Preamble chosen
 ```
 
+![](lab5-files/Pasted%20image%2020261126113113.png)
+*Wireshark - RACH Preamble chosen search*
+
 After locating the PRACH event recorded by the gNB tracer, record:
 
 ```text
-RAPID = ______
+RAPID = 16
 ```
 
 This packet is displayed as `MAC-LTE RACH Preamble chosen`; it is the OAI tracer MAC-event format.
@@ -121,16 +140,21 @@ This packet is displayed as `MAC-LTE RACH Preamble chosen`; it is the OAI tracer
 Submit one UE-log screenshot and one Wireshark screenshot. Briefly answer:
 
 1. Which Random Access message is this PRACH transmission?
+> This PRACH transmission is Msg1 of the four-step Random Access procedure.
 2. At which `frame.slot` and with which `preambleIndex` does the UE log show transmission?
+> The UE transmits at frame.slot = 553.19 with preambleIndex = 16.
 3. Does the Wireshark `RAPID` match the UE-log `preambleIndex`? What does this show?
+> If the Wireshark RAPID is 16, it matches the UE-log preambleIndex. This can confirms that the gNB detected the preamble transmitted by the UE.
 
 #### Step 4: Find Msg2 RAR in Wireshark — 11 points
 
 Return to Wireshark and clear the display filter. Press `Cmd/Ctrl + F`, choose **Packet details** as the search scope, and search for `RAR` or `Random Access Response`. After locating the packet, record its frame number and find the following values in `MAC-NR RAR`:
+![](lab5-files/Pasted%20image%2020261126113749.png)
+*Wireshark - Msg2 RAR*
 
 ```text
-RAPID = ______
-Temporary C-RNTI = ______
+RAPID = 16
+Temporary C-RNTI = 61982
 ```
 
 ### Task 2: Complete Random Access and RRC Connection Setup — 40 points
