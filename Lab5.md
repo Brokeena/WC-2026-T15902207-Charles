@@ -169,17 +169,22 @@ In Wireshark, use:
 nr-rrc.rrcSetupRequest_element
 ```
 
+![](lab5-files/Pasted%20image%2020261126114851.png)
+*Wireshark - nr-rrc.rrcSetupRequest_element filter*
+
 Expand `UL-CCCH-Message → rrcSetupRequest` and find:
 
 ```text
-Frame number = ______
-Context RNTI = ______
+Frame number = 491
+Context RNTI = 61982 (0xf21e in HEX)
 ```
 
 Briefly answer:
 
 1. Does the `Context RNTI` match the `Temporary C-RNTI` in the Task 1 / Step 4 RAR? What does this show?
+> Yes, both values are 61982. This shows that the UE uses the identifier assigned by the gNB during Msg2.
 2. Can you claim that the RRC connection has been established after seeing only `RRCSetupRequest`? Why or why not?
+> No, RRCSetupRequest only requests a connection. The UE must receive RRCSetup and send RRCSetupComplete to complete the RRC connection establishment.
 
 #### Step 2: Find RRCSetup — 10 points
 
@@ -189,12 +194,16 @@ Clear the previous filter and enter:
 nr-rrc.rrcSetup_element
 ```
 
+![](lab5-files/Pasted%20image%2020261126115321.png)
+*Wireshark - nr-rrc.rrcSetup_element filter*
+
 Expand `DL-CCCH-Message → rrcSetup` and find:
 
 ```text
-Frame number = ______
-Context RNTI = ______
-rrc-TransactionIdentifier = ______
+Frame number = 492
+Context RNTI = 61982 (0xf21e in HEX)
+rrc-TransactionIdentifier = 1
+Contention Resolution: Present
 ```
 
 Check whether `Contention Resolution` also appears in the packet.
@@ -202,7 +211,9 @@ Check whether `Contention Resolution` also appears in the packet.
 Below the screenshot, briefly answer:
 
 1. Which message is this in four-step Random Access?
+> This is Msg4 of the four-step Random Access procedure.
 2. What does it mean that `Contention Resolution` and `RRCSetup` appear in the same downlink message?
+> It means that the gNB resolves contention and provides the RRC connection configuration to the UE in the same message.
 
 #### Step 3: Find RRCSetupComplete — 12 points
 
@@ -219,18 +230,23 @@ RLC-NR → PDCP-NR → NR Radio Resource Control (RRC) protocol
   → UL-DCCH-Message → message: c1
 ```
 
+![](lab5-files/Pasted%20image%2020261126120019.png)
+*Wireshark - nr-rrc.rrcSetupComplete_element filter*
+
 Expand `message: c1` further and confirm that it contains `rrcSetupComplete`. Record:
 
 ```text
-Frame number = ______
-Context RNTI = ______
-rrc-TransactionIdentifier = ______
+Frame number = 498
+Context RNTI = 61982 (0xf21e in HEX)
+rrc-TransactionIdentifier = 1
 ```
 
 Below the screenshot, briefly answer:
 
 1. Does the `Context RNTI` still match the `Temporary C-RNTI` in the RAR?
+> Yes, the Context RNTI  still match the Temporary C-RNTI (0xf21e)
 2. Does the `rrc-TransactionIdentifier` match the `RRCSetup` in Step 2? What is the purpose of this comparison?
+> Yes, both transaction identifiers are 1. This confirms that RRCSetupComplete corresponds to the same RRC setup procedure.
 
 #### Step 4: Confirm the Final Random Access and RRC Connection Result — 8 points
 
@@ -241,19 +257,24 @@ grep -nE '4-Step RA procedure succeeded|Received NR_RRCSetup|RRCSetupComplete|St
   lab5-artifacts/Lab5-ue.log
 ```
 
+![](lab5-files/Pasted%20image%2020261126120427.png)
+*Final Random Access and Connection Result grep result*
+
 From the output, record:
 
 ```text
-4-Step RA procedure succeeded: line ______
-Received NR_RRCSetup: line ______
-State = NR_RRC_CONNECTED: line ______
-Generating RRCSetupComplete: line ______
+4-Step RA procedure succeeded: line 87
+Received NR_RRCSetup: line 88
+State = NR_RRC_CONNECTED: line 90
+Generating RRCSetupComplete: line 93
 ```
 
 Submit a screenshot of this log output and briefly answer:
 
 1. In log order, what are the three events from successful Random Access to generating `RRCSetupComplete`?
+> The UE receives RRCSetup, enters the RRC_CONNECTED state, and generates RRCSetupComplete (lines 88, 90 and 93).
 2. What do `4-Step RA procedure succeeded` and `State = NR_RRC_CONNECTED` each prove?
+> 4-Step RA procedure succeeded proves that Random Access and contention resolution were successful. State = NR_RRC_CONNECTED proves that the UE has entered the connected RRC state.
 
 ### Task 3: Draw an Initial Access MSC Diagram — 25 points
 
