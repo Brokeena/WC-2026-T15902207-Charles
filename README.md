@@ -35,6 +35,10 @@ In this lab,you will compare three 5-second UDP iperf3 tests. You will learn how
 - **LAB4: 5G CU/DU Split Deployment and F1-C/F1-U Analysis**
     - delivery: **[Submission Lab 4](Lab4.md)**
 
+- **LAB5: From Initial Access to RRC Connection Setup**
+    - delivery: **[Submission Lab 5](Lab5.md)**
+    - [ ] Peer review : [Vote the Top3](https://docs.google.com/forms/d/e/1FAIpQLSfpKvx7YearQIE6tBgbepTxCc5qGPC8sktOcpu58qNb8HB_iA/viewform)
+
 
 
 

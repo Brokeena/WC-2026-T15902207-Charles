@@ -144,7 +144,7 @@ Submit one UE-log screenshot and one Wireshark screenshot. Briefly answer:
 2. At which `frame.slot` and with which `preambleIndex` does the UE log show transmission?
 > The UE transmits at frame.slot = 553.19 with preambleIndex = 16.
 3. Does the Wireshark `RAPID` match the UE-log `preambleIndex`? What does this show?
-> If the Wireshark RAPID is 16, it matches the UE-log preambleIndex. This can confirms that the gNB detected the preamble transmitted by the UE.
+> Yes, the Wireshark RAPID and the UE-log preambleIndex are both 16, which is consistent with the gNB detecting the preamble transmitted by the UE.
 
 #### Step 4: Find Msg2 RAR in Wireshark — 11 points
 
@@ -281,6 +281,9 @@ Submit a screenshot of this log output and briefly answer:
 Using the log and Wireshark evidence found in Tasks 1 and 2, draw your own Message Sequence Chart (MSC). It must include two vertical lifelines, `UE` and `gNB`, and the following six messages: MIB/SIB1, Msg1, Msg2, Msg3, Msg4, and `RRCSetupComplete`.
 
 Determine and draw the correct order and direction of the messages yourself. Add a one-sentence purpose next to each arrow.
+
+![](lab5-files/IMG_4976.png)
+*Task 3 Diagram*
 
 | Item | Points |
 |---|---:|
